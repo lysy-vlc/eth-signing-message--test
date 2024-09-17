@@ -39,10 +39,12 @@ export const modal = createWeb3Modal({
 	enableOnramp: true // Optional - false as default
 })
 
-export const signData = async (chainId, contents, oracleaddress) => {
+export const signData = async (chainId, contents, oracleaddress, accountAddress) => {
+	console.log('signData', chainId, contents, oracleaddress, accountAddress)
+
 	const signParams = {
 		domain: {
-			chainId: chainId,
+			chainId,
 			name: 'Oracle Builder',
 			verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
 			version: '1'
@@ -56,14 +58,16 @@ export const signData = async (chainId, contents, oracleaddress) => {
 		},
 		message: {
 			contents,
-			creator: oracleaddress,
+			creator: accountAddress,
 			oracleaddress
 		},
 		primaryType: 'Oracle'
 	}
 
+	console.log(signParams)
+
 	try {
-		return await signTypedData(config, signParams)
+		return await signTypedData(config, {...signParams})
 	} catch (error) {
 		console.error(error)
 		return null
